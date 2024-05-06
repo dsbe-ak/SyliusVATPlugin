@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gewebe\SyliusVATPlugin\Entity;
 
 use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -23,6 +24,9 @@ trait VatNumberAwareTrait
      *
      * @Groups({"shop:address:read", "shop:address:create", "shop:address:update"})
      */
+    #[ORM\Column(name: 'vat_number', type: Types::STRING, nullable: true)]
+    #[Gedmo\Versioned()]
+    #[Groups(['shop:address:read', 'shop:address:create', 'shop:address:update'])]
     protected ?string $vatNumber = null;
 
     /**
@@ -30,6 +34,8 @@ trait VatNumberAwareTrait
      *
      * @Groups({"shop:address:read"})
      */
+    #[ORM\Column(name: 'vat_valid', type: Types::BOOLEAN)]
+    #[Groups(['shop:address:read'])]
     protected bool $vatValid = false;
 
     /**
@@ -37,6 +43,8 @@ trait VatNumberAwareTrait
      *
      * @Groups({"shop:address:read"})
      */
+    #[ORM\Column(name: 'vat_validated_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['shop:address:read'])]
     protected ?DateTime $vatValidatedAt = null;
 
     public function getVatNumber(): ?string

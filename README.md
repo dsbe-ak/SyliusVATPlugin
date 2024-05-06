@@ -86,6 +86,8 @@ use Sylius\Component\Core\Model\Address as BaseAddress;
  * @ORM\Entity
  * @ORM\Table(name="sylius_address")
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'sylius_address')]
 class Address extends BaseAddress implements VatNumberAddressInterface
 {
     use VatNumberAwareTrait;
@@ -128,6 +130,8 @@ use Sylius\Component\Core\Model\ShopBillingData as BaseShopBillingData;
  * @ORM\Entity
  * @ORM\Table(name="sylius_shop_billing_data")
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'sylius_shop_billing_data')]
 class ShopBillingData extends BaseShopBillingData implements ShopBillingDataVatNumberInterface
 {
     use ShopBillingDataVatNumberAwareTrait;

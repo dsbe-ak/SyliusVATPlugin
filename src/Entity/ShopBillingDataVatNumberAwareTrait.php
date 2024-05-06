@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gewebe\SyliusVATPlugin\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -19,6 +20,8 @@ trait ShopBillingDataVatNumberAwareTrait
      *
      * @Groups({"admin:shop_billing_data:read"})
      */
+    #[ORM\Column(name: 'vat_number', type: Types::STRING, nullable: true)]
+    #[Groups(['admin:shop_billing_data:read'])]
     protected ?string $vatNumber = null;
 
     public function getVatNumber(): ?string
