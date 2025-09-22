@@ -8,7 +8,7 @@
         "php": "^8.2",
         "ext-soap": "*",
         "ibericode/vat": "^2.0",
-        "sylius/sylius": "~2.0.0"
+        "sylius/sylius": "^2.0"
     },
     "require-dev": {
         "behat/behat": "^3.16",
