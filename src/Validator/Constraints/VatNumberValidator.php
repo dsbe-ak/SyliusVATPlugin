@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gewebe\SyliusVATPlugin\Validator\Constraints;
 
+use DateTimeImmutable;
 use Gewebe\SyliusVATPlugin\Config\VatNumberValidatorConfig;
 use Gewebe\SyliusVATPlugin\Entity\VatNumberAddressInterface;
 use Gewebe\SyliusVATPlugin\Vat\Number\ClientException;
@@ -13,9 +14,13 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
+use Symfony\Contracts\Service\ResetInterface;
 
-class VatNumberValidator extends ConstraintValidator
+class VatNumberValidator extends ConstraintValidator implements ResetInterface
 {
+    /** @var array<string, bool|null> */
+    private array $registrationResults = [];
+
     public function __construct(
         private readonly VatNumberValidatorProviderInterface $validatorProvider,
         private readonly VatNumberValidatorConfig $validatorConfig,
@@ -61,9 +66,25 @@ class VatNumberValidator extends ConstraintValidator
             return;
         }
 
+        if ($this->validatorConfig->validateRegistration && $this->hasCurrentValidation($value)) {
+            $validVatNumber = $value->hasValidVatNumber();
+            $this->registrationResults[$this->getCacheKey($value)] = $validVatNumber;
+
+            if (!$validVatNumber) {
+                $this->addViolation($constraint->messageInvalidRegistration, $constraint->vatNumberPath);
+            }
+
+            return;
+        }
+
         if ($this->validatorConfig->validateRegistration) {
             $this->validateRegistration($value, $vatNumberValidator, $constraint);
         }
+    }
+
+    public function reset(): void
+    {
+        $this->registrationResults = [];
     }
 
     private function addViolation(string $message, string $path): void
@@ -105,9 +126,18 @@ class VatNumberValidator extends ConstraintValidator
         VatNumberValidatorInterface $validator,
         VatNumber $constraint,
     ): void {
-        try {
-            $validVatNumber = $validator->validate($address->getVatNumber() ?? '');
-        } catch (ClientException) {
+        $cacheKey = $this->getCacheKey($address);
+
+        if (!array_key_exists($cacheKey, $this->registrationResults)) {
+            try {
+                $this->registrationResults[$cacheKey] = $validator->validate($address->getVatNumber() ?? '');
+            } catch (ClientException) {
+                $this->registrationResults[$cacheKey] = null;
+            }
+        }
+
+        $validVatNumber = $this->registrationResults[$cacheKey];
+        if ($validVatNumber === null) {
             if ($this->validatorConfig->validateOnServiceUnavailable === true) {
                 $this->addViolation($constraint->messageServiceUnavailable, $constraint->vatNumberPath);
             }
@@ -120,5 +150,23 @@ class VatNumberValidator extends ConstraintValidator
         if (false === $validVatNumber) {
             $this->addViolation($constraint->messageInvalidRegistration, $constraint->vatNumberPath);
         }
+    }
+
+    private function getCacheKey(VatNumberAddressInterface $address): string
+    {
+        return sprintf('%s:%s', $address->getCountryCode(), $address->getVatNumber());
+    }
+
+    private function hasCurrentValidation(VatNumberAddressInterface $address): bool
+    {
+        $validatedAt = $address->getVatValidatedAt();
+        if ($validatedAt === null) {
+            return false;
+        }
+
+        $expiresAt = DateTimeImmutable::createFromInterface($validatedAt)
+            ->modify(sprintf('%d days', $this->validatorConfig->expirationDays));
+
+        return $expiresAt > new DateTimeImmutable();
     }
 }

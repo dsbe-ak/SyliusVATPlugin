@@ -7,6 +7,7 @@ services:
             - '@gewebe_sylius_vat_plugin.vat_number_validator_config'
         tags:
             - { name: validator.constraint_validator }
+            - { name: kernel.reset, method: reset }
 
     gewebe_sylius_vat_plugin.vat_number_validator_config:
         class: Gewebe\SyliusVATPlugin\Config\VatNumberValidatorConfig

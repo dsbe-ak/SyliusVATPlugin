@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Gewebe\SyliusVATPlugin\Unit\Validator\Constraints;
 
+use DateTime;
 use Gewebe\SyliusVATPlugin\Config\VatNumberValidatorConfig;
 use Gewebe\SyliusVATPlugin\Entity\VatNumberAddressInterface;
 use Gewebe\SyliusVATPlugin\Validator\Constraints\VatNumber;
@@ -30,11 +31,13 @@ final class VatNumberValidatorTest extends TestCase
 
     private MockObject&VatNumberValidatorProviderInterface $provider;
 
+    private MockObject&VatNumberValidatorInterface $vatNumberValidator;
+
     protected function setUp(): void
     {
-        $vatNumberValidator = $this->createMock(VatNumberValidatorInterface::class);
+        $this->vatNumberValidator = $this->createMock(VatNumberValidatorInterface::class);
 
-        $vatNumberValidator->method('validateFormat')
+        $this->vatNumberValidator->method('validateFormat')
             ->willReturnMap([
                                 [self::VAT_VALID, true],
                                 [self::VAT_INVALID_FORMAT, false],
@@ -43,7 +46,7 @@ final class VatNumberValidatorTest extends TestCase
                                 [self::VAT_SERVICE_UNAVAILABLE, true],
                             ]);
 
-        $vatNumberValidator->method('validateCountry')
+        $this->vatNumberValidator->method('validateCountry')
             ->willReturnMap([
                                 [self::VAT_VALID, 'DE', true],
                                 [self::VAT_INVALID_COUNTRY, 'DE', false],
@@ -51,7 +54,7 @@ final class VatNumberValidatorTest extends TestCase
                                 [self::VAT_SERVICE_UNAVAILABLE, 'DE', true],
                             ]);
 
-        $vatNumberValidator->method('validate')
+        $this->vatNumberValidator->method('validate')
             ->willReturnCallback(function (string $vatNumber) {
                 if ($vatNumber == self::VAT_SERVICE_UNAVAILABLE) {
                     throw new ClientException();
@@ -65,9 +68,9 @@ final class VatNumberValidatorTest extends TestCase
 
         $this->provider = $this->createMock(VatNumberValidatorProviderInterface::class);
         $this->provider->method('getValidator')
-            ->willReturnCallback(function (string $countryCode) use ($vatNumberValidator) {
+            ->willReturnCallback(function (string $countryCode) {
                 return match ($countryCode) {
-                    'DE' => $vatNumberValidator,
+                    'DE' => $this->vatNumberValidator,
                     default => null,
                 };
             });
@@ -165,6 +168,64 @@ final class VatNumberValidatorTest extends TestCase
         $this->validateAddress($this->getContext(), self::VAT_VALID, 'DE');
     }
 
+    public function testItReusesCurrentValidRegistrationForAnIdenticalAddress(): void
+    {
+        $this->vatNumberValidator->expects(self::never())->method('validate');
+
+        $validator = $this->initVatNumberValidator($this->getContext());
+        $validator->validate($this->createVatAddress(new DateTime('-1 day'), true), new VatNumber());
+        $validator->validate($this->createVatAddress(expectsValidationUpdate: true), new VatNumber());
+    }
+
+    public function testItRejectsCurrentInvalidRegistrationWithoutOnlineValidation(): void
+    {
+        $this->vatNumberValidator->expects(self::never())->method('validate');
+
+        $validator = $this->initVatNumberValidator($this->getContext(true, 'messageInvalidRegistration'));
+        $validator->validate($this->createVatAddress(new DateTime('-1 day'), false), new VatNumber());
+    }
+
+    public function testItRevalidatesExpiredRegistration(): void
+    {
+        $this->vatNumberValidator->expects(self::once())->method('validate')->with(self::VAT_VALID)->willReturn(true);
+
+        $validator = $this->initVatNumberValidator($this->getContext());
+        $validator->validate($this->createVatAddress(new DateTime('-31 days'), true, true), new VatNumber());
+    }
+
+    public function testItCachesRegistrationValidationForIdenticalAddresses(): void
+    {
+        $this->vatNumberValidator->expects(self::once())->method('validate')->with(self::VAT_VALID)->willReturn(true);
+
+        $validator = $this->initVatNumberValidator($this->getContext());
+        $validator->validate($this->createVatAddress(expectsValidationUpdate: true), new VatNumber());
+        $validator->validate($this->createVatAddress(expectsValidationUpdate: true), new VatNumber());
+    }
+
+    public function testItCachesServiceUnavailabilityForIdenticalAddresses(): void
+    {
+        $this->vatNumberValidator
+            ->expects(self::once())
+            ->method('validate')
+            ->with(self::VAT_SERVICE_UNAVAILABLE)
+            ->willThrowException(new ClientException())
+        ;
+
+        $validator = $this->initVatNumberValidator($this->getContext());
+        $validator->validate($this->createVatAddress(vatNumber: self::VAT_SERVICE_UNAVAILABLE), new VatNumber());
+        $validator->validate($this->createVatAddress(vatNumber: self::VAT_SERVICE_UNAVAILABLE), new VatNumber());
+    }
+
+    public function testItClearsRegistrationValidationCacheOnReset(): void
+    {
+        $this->vatNumberValidator->expects(self::exactly(2))->method('validate')->with(self::VAT_VALID)->willReturn(true);
+
+        $validator = $this->initVatNumberValidator($this->getContext());
+        $validator->validate($this->createVatAddress(expectsValidationUpdate: true), new VatNumber());
+        $validator->reset();
+        $validator->validate($this->createVatAddress(expectsValidationUpdate: true), new VatNumber());
+    }
+
     private function getContext(
         $expectsViolation = false,
         $expectsMessage = 'messageRequired'
@@ -209,6 +270,26 @@ final class VatNumberValidatorTest extends TestCase
         }
 
         return $vatNumberValidator;
+    }
+
+    private function createVatAddress(
+        ?DateTime $validatedAt = null,
+        bool $valid = false,
+        bool $expectsValidationUpdate = false,
+        string $vatNumber = self::VAT_VALID,
+    ): MockObject&VatNumberAddressInterface {
+        $address = $this->createMock(VatNumberAddressInterface::class);
+        $address->method('getCompany')->willReturn(null);
+        $address->method('getCountryCode')->willReturn('DE');
+        $address->method('getVatNumber')->willReturn($vatNumber);
+        $address->method('hasVatNumber')->willReturn(true);
+        $address->method('getVatValidatedAt')->willReturn($validatedAt);
+        $address->method('hasValidVatNumber')->willReturn($valid);
+
+        $validationUpdateExpectation = $expectsValidationUpdate ? self::once() : self::never();
+        $address->expects($validationUpdateExpectation)->method('setVatValid')->with(true);
+
+        return $address;
     }
 
     private function validateAddress(
