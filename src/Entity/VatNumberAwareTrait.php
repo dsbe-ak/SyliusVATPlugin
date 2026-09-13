@@ -88,14 +88,17 @@ trait VatNumberAwareTrait
         return null !== $this->vatNumber && '' !== $this->vatNumber;
     }
 
+    /**
+     * @deprecated since 2.3, use isVatValid() instead.
+     */
     public function hasValidVatNumber(): bool
     {
-        return $this->hasVatNumber() && $this->vatValid;
+        return $this->isVatValid();
     }
 
     public function isVatValid(): bool
     {
-        return $this->hasValidVatNumber();
+        return $this->hasVatNumber() && $this->vatValid;
     }
 
     public function setVatValid(bool $valid, ?DateTime $validatedAt = null): void

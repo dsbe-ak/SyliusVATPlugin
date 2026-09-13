@@ -50,16 +50,17 @@ final class AddressTest extends TestCase
     {
         $address = new Address();
 
-        static::assertFalse($address->hasValidVatNumber());
+        static::assertFalse($address->isVatValid());
 
         $address->setVatValid(true);
-        static::assertFalse($address->hasValidVatNumber());
+        static::assertFalse($address->isVatValid());
 
         $address->setVatValid(false);
         $address->setVatNumber('DE123456789');
-        static::assertFalse($address->hasValidVatNumber());
+        static::assertFalse($address->isVatValid());
 
         $address->setVatValid(true);
+        static::assertTrue($address->isVatValid());
         static::assertTrue($address->hasValidVatNumber());
     }
 
@@ -69,18 +70,18 @@ final class AddressTest extends TestCase
         $address->setVatNumber('DE123456789');
         $address->setVatValid(true, new \DateTime());
 
-        static::assertTrue($address->hasValidVatNumber());
+        static::assertTrue($address->isVatValid());
         static::assertNotNull($address->getVatValidatedAt());
 
         // Test that setting same number DOES NOT reset state
         $address->setVatNumber('DE123456789');
-        static::assertTrue($address->hasValidVatNumber(), 'vatValid should NOT be reset when setting the same vatNumber');
+        static::assertTrue($address->isVatValid(), 'vatValid should NOT be reset when setting the same vatNumber');
         static::assertNotNull($address->getVatValidatedAt(), 'vatValidatedAt should NOT be reset when setting the same vatNumber');
 
         // Test that changing number DOES reset state
         $address->setVatNumber('DE987654321');
 
-        static::assertFalse($address->hasValidVatNumber(), 'vatValid should be reset to false after changing vatNumber');
+        static::assertFalse($address->isVatValid(), 'vatValid should be reset to false after changing vatNumber');
         static::assertNull($address->getVatValidatedAt(), 'vatValidatedAt should be reset to null after changing vatNumber');
     }
 }

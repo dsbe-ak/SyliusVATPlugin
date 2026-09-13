@@ -33,7 +33,7 @@ final class AddressMapperTest extends TestCase
 
         static::assertSame($currentAddress, $result);
         static::assertSame('DE123123123', $currentAddress->getVatNumber());
-        static::assertFalse($currentAddress->hasValidVatNumber());
+        static::assertFalse($currentAddress->isVatValid());
         static::assertNull($currentAddress->getVatValidatedAt());
     }
 

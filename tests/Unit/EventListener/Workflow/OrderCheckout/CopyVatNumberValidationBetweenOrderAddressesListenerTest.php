@@ -24,7 +24,7 @@ final class CopyVatNumberValidationBetweenOrderAddressesListenerTest extends Tes
 
         $this->invokeListener($billingAddress, $shippingAddress, true);
 
-        self::assertTrue($shippingAddress->hasValidVatNumber());
+        self::assertTrue($shippingAddress->isVatValid());
         self::assertEquals($validatedAt, $shippingAddress->getVatValidatedAt());
         self::assertNotSame($validatedAt, $shippingAddress->getVatValidatedAt());
     }
@@ -37,7 +37,7 @@ final class CopyVatNumberValidationBetweenOrderAddressesListenerTest extends Tes
 
         $this->invokeListener($billingAddress, $shippingAddress, true);
 
-        self::assertTrue($billingAddress->hasValidVatNumber());
+        self::assertTrue($billingAddress->isVatValid());
         self::assertEquals($shippingAddress->getVatValidatedAt(), $billingAddress->getVatValidatedAt());
     }
 
@@ -49,7 +49,7 @@ final class CopyVatNumberValidationBetweenOrderAddressesListenerTest extends Tes
 
         $this->invokeListener($billingAddress, $shippingAddress, false);
 
-        self::assertFalse($shippingAddress->hasValidVatNumber());
+        self::assertFalse($shippingAddress->isVatValid());
         self::assertNull($shippingAddress->getVatValidatedAt());
     }
 
@@ -61,7 +61,7 @@ final class CopyVatNumberValidationBetweenOrderAddressesListenerTest extends Tes
 
         $this->invokeListener($billingAddress, $shippingAddress, true, 0);
 
-        self::assertFalse($shippingAddress->hasValidVatNumber());
+        self::assertFalse($shippingAddress->isVatValid());
         self::assertNull($shippingAddress->getVatValidatedAt());
     }
 
@@ -74,7 +74,7 @@ final class CopyVatNumberValidationBetweenOrderAddressesListenerTest extends Tes
 
         $this->invokeListener($billingAddress, $shippingAddress, true);
 
-        self::assertFalse($shippingAddress->hasValidVatNumber());
+        self::assertFalse($shippingAddress->isVatValid());
         self::assertSame($shippingValidatedAt, $shippingAddress->getVatValidatedAt());
     }
 

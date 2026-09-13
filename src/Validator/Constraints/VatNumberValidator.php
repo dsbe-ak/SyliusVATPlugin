@@ -67,7 +67,7 @@ class VatNumberValidator extends ConstraintValidator implements ResetInterface
         }
 
         if ($this->validatorConfig->validateRegistration && $this->hasCurrentValidation($value)) {
-            $validVatNumber = $value->hasValidVatNumber();
+            $validVatNumber = $value->isVatValid();
             $this->registrationResults[$this->getCacheKey($value)] = $validVatNumber;
 
             if (!$validVatNumber) {

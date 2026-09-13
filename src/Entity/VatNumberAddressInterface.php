@@ -18,7 +18,12 @@ interface VatNumberAddressInterface extends AddressInterface
 
     public function hasVatNumber(): bool;
 
+    /**
+     * @deprecated since 2.3, use isVatValid() instead.
+     */
     public function hasValidVatNumber(): bool;
+
+    public function isVatValid(): bool;
 
     public function setVatValid(bool $valid, ?DateTime $validatedAt = null): void;
 

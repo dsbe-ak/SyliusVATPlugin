@@ -52,6 +52,6 @@ final readonly class CopyVatNumberValidationBetweenOrderAddressesListener
         $validatedAt = $source->getVatValidatedAt();
         Assert::notNull($validatedAt);
 
-        $target->setVatValid($source->hasValidVatNumber(), clone $validatedAt);
+        $target->setVatValid($source->isVatValid(), clone $validatedAt);
     }
 }

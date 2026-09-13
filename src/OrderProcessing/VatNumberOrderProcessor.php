@@ -98,7 +98,7 @@ final class VatNumberOrderProcessor implements OrderProcessorInterface
         $taxationAddress = $this->taxationAddressResolver->getTaxationAddressFromOrder($order);
 
         return $taxationAddress instanceof VatNumberAddressInterface &&
-            $taxationAddress->hasValidVatNumber() &&
+            $taxationAddress->isVatValid() &&
             ($this->isEuZone($taxationAddress->getCountryCode()) || $this->hasNorthernIrelandVatNumber($taxationAddress)) &&
             $taxationAddress->getCountryCode() !== $shopBillingData->getCountryCode();
     }

@@ -33,9 +33,9 @@ class VatContext implements Context
         $this->objectManager->refresh($address);
 
         if ($validation === 'validated') {
-            Assert::true($address->hasValidVatNumber());
+            Assert::true($address->isVatValid());
         } elseif ($validation === 'invalidated') {
-            Assert::false($address->hasValidVatNumber());
+            Assert::false($address->isVatValid());
         }
 
         $validatedAt = $address->getVatValidatedAt();

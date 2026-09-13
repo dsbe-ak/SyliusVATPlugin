@@ -238,7 +238,7 @@ final class VatNumberOrderProcessorTest extends TestCase
     ): TaxationAddressResolverInterface {
         $taxationAddress = $this->createMock(VatNumberAddressInterface::class);
         $taxationAddress->method('getCountryCode')->willReturn($countryCode);
-        $taxationAddress->method('hasValidVatNumber')->willReturn($validVatNumber);
+        $taxationAddress->method('isVatValid')->willReturn($validVatNumber);
         $taxationAddress->method('getVatNumber')->willReturn($vatNumber);
 
         $taxationAddressResolver = $this->createMock(TaxationAddressResolverInterface::class);

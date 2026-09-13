@@ -284,7 +284,7 @@ final class VatNumberValidatorTest extends TestCase
         $address->method('getVatNumber')->willReturn($vatNumber);
         $address->method('hasVatNumber')->willReturn(true);
         $address->method('getVatValidatedAt')->willReturn($validatedAt);
-        $address->method('hasValidVatNumber')->willReturn($valid);
+        $address->method('isVatValid')->willReturn($valid);
 
         $validationUpdateExpectation = $expectsValidationUpdate ? self::once() : self::never();
         $address->expects($validationUpdateExpectation)->method('setVatValid')->with(true);

@@ -66,9 +66,9 @@ final class AddressBookVatContext implements Context
         $this->objectManager->refresh($address);
 
         if ($shouldBeValid) {
-            Assert::true($address->hasValidVatNumber(), 'VAT number should be valid in database but it is not.');
+            Assert::true($address->isVatValid(), 'VAT number should be valid in database but it is not.');
         } else {
-            Assert::false($address->hasValidVatNumber(), 'VAT number should not be valid in database but it is.');
+            Assert::false($address->isVatValid(), 'VAT number should not be valid in database but it is.');
         }
     }
 }
