@@ -61,6 +61,19 @@ services:
         arguments:
             - "@gewebe_sylius_vat_plugin.behat.page.shop.checkout.address"
 
+    gewebe_sylius_vat_plugin.behat.context.api.shop.address_book_vat:
+        class: Tests\Gewebe\SyliusVATPlugin\Behat\Context\Api\Shop\AddressBookVatContext
+        arguments:
+            - "@sylius.behat.api_platform_client.shop"
+            - "@Sylius\\Behat\\Client\\ResponseCheckerInterface"
+
+    gewebe_sylius_vat_plugin.behat.context.api.shop.checkout_vat:
+        class: Tests\Gewebe\SyliusVATPlugin\Behat\Context\Api\Shop\CheckoutVatContext
+        arguments:
+            - "@sylius.behat.api_platform_client.shop"
+            - "@sylius.behat.shared_storage"
+            - "@Sylius\\Behat\\Client\\ResponseCheckerInterface"
+
 
     gewebe_sylius_vat_plugin.behat.element.admin.channel.shop_billing_vat_number:
         class: Tests\Gewebe\SyliusVATPlugin\Behat\Element\Admin\Channel\ShopBillingDataVatNumberElement

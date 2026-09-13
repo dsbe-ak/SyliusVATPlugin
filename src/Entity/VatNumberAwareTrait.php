@@ -19,17 +19,53 @@ trait VatNumberAwareTrait
 {
     #[ORM\Column(name: 'vat_number', type: Types::STRING, nullable: true)]
     #[Gedmo\Versioned]
-    #[Groups(['shop:address:read', 'shop:address:create', 'shop:address:update'])]
+    #[Groups([
+        'shop:address:read',
+        'shop:address:create',
+        'shop:address:update',
+        'sylius:admin:address:index',
+        'sylius:admin:address:show',
+        'sylius:admin:address:update',
+        'sylius:admin:order:index',
+        'sylius:admin:order:show',
+        'sylius:shop:address:create',
+        'sylius:shop:address:index',
+        'sylius:shop:address:show',
+        'sylius:shop:address:update',
+        'sylius:shop:cart:update',
+        'sylius:shop:cart:show',
+        'sylius:shop:order:account:show',
+    ])]
     protected ?string $vatNumber = null;
 
     #[ORM\Column(name: 'vat_valid', type: Types::BOOLEAN)]
     #[Gedmo\Versioned]
-    #[Groups(['shop:address:read'])]
+    #[Groups([
+        'shop:address:read',
+        'sylius:admin:address:index',
+        'sylius:admin:address:show',
+        'sylius:admin:order:index',
+        'sylius:admin:order:show',
+        'sylius:shop:address:index',
+        'sylius:shop:address:show',
+        'sylius:shop:cart:show',
+        'sylius:shop:order:account:show',
+    ])]
     protected bool $vatValid = false;
 
     #[ORM\Column(name: 'vat_validated_at', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Versioned]
-    #[Groups(['shop:address:read'])]
+    #[Groups([
+        'shop:address:read',
+        'sylius:admin:address:index',
+        'sylius:admin:address:show',
+        'sylius:admin:order:index',
+        'sylius:admin:order:show',
+        'sylius:shop:address:index',
+        'sylius:shop:address:show',
+        'sylius:shop:cart:show',
+        'sylius:shop:order:account:show',
+    ])]
     protected ?DateTime $vatValidatedAt = null;
 
     public function getVatNumber(): ?string
@@ -55,6 +91,11 @@ trait VatNumberAwareTrait
     public function hasValidVatNumber(): bool
     {
         return $this->hasVatNumber() && $this->vatValid;
+    }
+
+    public function isVatValid(): bool
+    {
+        return $this->hasValidVatNumber();
     }
 
     public function setVatValid(bool $valid, ?DateTime $validatedAt = null): void

@@ -12,21 +12,32 @@ Feature: Order addressing vat validation
         And I have product "PHP T-Shirt" in the cart
         And I am at the checkout addressing step
 
-    @ui
+    @api @ui
     Scenario: Address an order for a company where the VAT number is required
         When I specify the billing company as "LaLuna"
         And I try to complete the addressing step
         Then I should be notified that the company VAT number in billing is required
 
-    @ui
+    @api @ui
     Scenario: Address an order for a country where the VAT number is required
         When I specify the billing address as "Lisboa", "Rua Augusta", "1100-016", "Portugal" for "Maria Lopes"
         And I try to complete the addressing step
         Then I should be notified that the VAT number in billing is required
 
-    @ui
+    @api @ui
     Scenario: Address an order with invalid VAT number
         When I specify the billing address as "Barcelona", "Carrer de Mercedes", "C573+5G", "Spain" for "Pau Güell"
         And I specify the billing VAT number as "ES666666666"
         And I try to complete the addressing step
         Then I should be notified that the VAT number in billing is not valid
+
+    @api
+    Scenario: Updating a valid VAT number on an already addressed order
+        When I specify the billing address as "Granada", "Calle Gran Vía de Colón 1", "18001", "Spain" for "Carmen García"
+        And I specify the billing VAT number as "ES12345678Z"
+        And I complete the addressing step
+        Then the cart billing address VAT number should be "ES12345678Z"
+        When I specify the billing address as "Granada", "Calle Gran Vía de Colón 1", "18001", "Spain" for "Carmen García"
+        And I specify the billing VAT number as "ES87654321X"
+        And I complete the addressing step
+        Then the cart billing address VAT number should be "ES87654321X"

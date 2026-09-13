@@ -2,6 +2,53 @@
 
 default:
     suites:
+        api_address_book_vat_number:
+            contexts:
+                - sylius.behat.context.hook.doctrine_orm
+                - sylius.behat.context.hook.guest_cart
+
+                - sylius.behat.context.setup.address
+                - sylius.behat.context.setup.channel
+                - sylius.behat.context.setup.customer
+                - sylius.behat.context.setup.geographical
+                - sylius.behat.context.setup.shop_api_security
+
+                - sylius.behat.context.transform.address
+                - sylius.behat.context.transform.country
+                - sylius.behat.context.transform.customer
+
+                - sylius.behat.context.api.shop.address
+
+                - gewebe_sylius_vat_plugin.behat.context.api.shop.address_book_vat
+            filters:
+                tags: "@api_address_book_vat_number && @api"
+            javascript: false
+        api_checkout_vat_number:
+            contexts:
+                - sylius.behat.context.hook.doctrine_orm
+                - sylius.behat.context.hook.guest_cart
+
+                - sylius.behat.context.setup.cart
+                - sylius.behat.context.setup.channel
+                - sylius.behat.context.setup.customer
+                - sylius.behat.context.setup.geographical
+                - sylius.behat.context.setup.product
+                - sylius.behat.context.setup.shop_api_security
+
+                - sylius.behat.context.transform.address
+                - sylius.behat.context.transform.cart
+                - sylius.behat.context.transform.country
+                - sylius.behat.context.transform.customer
+                - sylius.behat.context.transform.lexical
+                - sylius.behat.context.transform.product
+                - sylius.behat.context.transform.shared_storage
+
+                - sylius.behat.context.api.shop.cart
+
+                - gewebe_sylius_vat_plugin.behat.context.api.shop.checkout_vat
+            filters:
+                tags: "@checkout_vat_number && @api"
+            javascript: false
         ui_customer_login_vat_number:
             contexts:
                 - sylius.behat.context.hook.doctrine_orm

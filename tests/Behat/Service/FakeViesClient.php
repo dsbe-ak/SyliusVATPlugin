@@ -21,6 +21,8 @@ final class FakeViesClient extends Client
             'BE0123456789',
             'DE123456789',
             'DE123123123',
+            'ES12345678Z',
+            'ES87654321X',
             'FR00123456789',
             'HR00123456789',
             'XI123456789',

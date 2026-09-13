@@ -56,6 +56,14 @@ final class GewebeSyliusVATExtension extends AbstractResourceExtension implement
     public function prepend(ContainerBuilder $container): void
     {
         $this->prependDoctrineMigrations($container);
+
+        if ($container->hasExtension('sylius_api')) {
+            $container->prependExtensionConfig('api_platform', [
+                'mapping' => [
+                    'paths' => [__DIR__ . '/../../config/api_resources'],
+                ],
+            ]);
+        }
     }
 
     protected function getMigrationsNamespace(): string

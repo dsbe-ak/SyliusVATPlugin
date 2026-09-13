@@ -1,0 +1,7 @@
+services:
+
+    gewebe_sylius_vat_plugin.api.mapper.address:
+        class: Gewebe\SyliusVATPlugin\Api\Mapper\AddressMapper
+        decorates: sylius_api.mapper.address
+        arguments:
+            - '@.inner'
