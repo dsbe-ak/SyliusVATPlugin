@@ -14,7 +14,7 @@ Feature: Managing an address VAT number through the API
     Scenario: Adding, reading, updating and removing an address VAT number
         When I want to add a new address to my address book
         And I specify the address as "Carmen García", "Calle Gran Vía de Colón 1", "18001", "Granada", "Spain", "Granada"
-        And I specify the VAT number as "ES12345678Z"
+        And I specify the VAT number as "es 123.456-78 z"
         And I add it
         Then I should be notified that the address has been successfully added
         And the returned address should contain the VAT number "ES12345678Z"

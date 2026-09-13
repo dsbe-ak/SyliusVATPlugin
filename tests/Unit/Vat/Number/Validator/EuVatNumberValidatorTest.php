@@ -50,6 +50,7 @@ final class EuVatNumberValidatorTest extends TestCase
     public function testValidateCountry(): void
     {
         self::assertTrue($this->euVatNumberValidator->validateCountry('DE123456789', 'DE'));
+        self::assertTrue($this->euVatNumberValidator->validateCountry('de 123.456-789', 'DE'));
         self::assertTrue($this->euVatNumberValidator->validateCountry('DE123456789', 'de'));
         self::assertTrue($this->euVatNumberValidator->validateCountry('EL123456789', 'GR'));
         self::assertTrue($this->euVatNumberValidator->validateCountry('EL123456789', 'gr'));
@@ -61,12 +62,14 @@ final class EuVatNumberValidatorTest extends TestCase
     {
         self::assertFalse($this->euVatNumberValidator->validateFormat('DE666XY'));
         self::assertTrue($this->euVatNumberValidator->validateFormat('DE123456789'));
+        self::assertTrue($this->euVatNumberValidator->validateFormat('de 123.456-789'));
         self::assertTrue($this->euVatNumberValidator->validateFormat('EL123456789'));
     }
 
     public function testValidate(): void
     {
         self::assertTrue($this->euVatNumberValidator->validate('DE123456789'));
+        self::assertTrue($this->euVatNumberValidator->validate('de 123.456-789'));
         self::assertTrue($this->euVatNumberValidator->validate('EL123456789'));
     }
 

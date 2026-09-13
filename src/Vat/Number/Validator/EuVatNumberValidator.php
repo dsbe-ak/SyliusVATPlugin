@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gewebe\SyliusVATPlugin\Vat\Number\Validator;
 
 use Gewebe\SyliusVATPlugin\Vat\Number\ClientException;
+use Gewebe\SyliusVATPlugin\Vat\Number\VatNumberNormalizer;
 use Gewebe\SyliusVATPlugin\Vat\Number\VatNumberValidatorInterface;
 use Ibericode\Vat\Countries;
 use Ibericode\Vat\Validator;
@@ -44,21 +45,22 @@ final class EuVatNumberValidator implements VatNumberValidatorInterface
 
     public function validateCountry(string $vatNumber, string $countryCode): bool
     {
+        $vatNumber = VatNumberNormalizer::normalize($vatNumber);
         $countryCode = strtoupper($countryCode);
         $expectedVatPrefix = self::VAT_PREFIX_BY_COUNTRY[$countryCode] ?? $countryCode;
 
-        return 0 === strcasecmp(substr(trim($vatNumber), 0, 2), $expectedVatPrefix);
+        return str_starts_with($vatNumber, $expectedVatPrefix);
     }
 
     public function validateFormat(string $vatNumber): bool
     {
-        return $this->validator->validateVatNumberFormat($vatNumber);
+        return $this->validator->validateVatNumberFormat(VatNumberNormalizer::normalize($vatNumber));
     }
 
     public function validate(string $vatNumber): bool
     {
         try {
-            return $this->validator->validateVatNumber($vatNumber);
+            return $this->validator->validateVatNumber(VatNumberNormalizer::normalize($vatNumber));
         } catch (ViesException $e) {
             throw new ClientException($e->getMessage(), $e->getCode(), $e);
         }

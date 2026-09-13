@@ -28,9 +28,10 @@ final class ShopBillingDataTest extends TestCase
         self::assertFalse($billingData->hasVatNumber());
 
         $billingData->setVatNumber(' ');
-        self::assertTrue($billingData->hasVatNumber());
+        self::assertFalse($billingData->hasVatNumber());
 
-        $billingData->setVatNumber('ATU12345678');
+        $billingData->setVatNumber('at u123.456-78');
         self::assertTrue($billingData->hasVatNumber());
+        self::assertSame('ATU12345678', $billingData->getVatNumber());
     }
 }

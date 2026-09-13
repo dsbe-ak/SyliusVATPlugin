@@ -8,6 +8,7 @@ use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gewebe\SyliusVATPlugin\Vat\Number\VatNumberNormalizer;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
@@ -75,6 +76,10 @@ trait VatNumberAwareTrait
 
     public function setVatNumber(?string $vatNumber): void
     {
+        if ($vatNumber !== null) {
+            $vatNumber = VatNumberNormalizer::normalize($vatNumber);
+        }
+
         if ($this->vatNumber !== $vatNumber) {
             $this->vatValid = false;
             $this->vatValidatedAt = null;

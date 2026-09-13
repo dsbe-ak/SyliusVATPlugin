@@ -182,6 +182,11 @@ bin/console vat:install:eu DE -c standard,reduced
 ##### 2. Show VAT number and validation status at admin orders
 ![Screenshot order shipping address with vat number](docs/images/admin_order_address.png)
 
+### VAT number normalization
+
+VAT numbers are converted to uppercase and whitespace, dots and hyphens are removed before they are
+stored or validated. For example, `de 123.456-789` is stored as `DE123456789`.
+
 ### Special EU VAT prefixes
 
 Greek VAT numbers use the `EL` prefix even though the address country code is `GR`. The plugin

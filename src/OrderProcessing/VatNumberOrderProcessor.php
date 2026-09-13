@@ -7,6 +7,7 @@ namespace Gewebe\SyliusVATPlugin\OrderProcessing;
 use Doctrine\ORM\EntityManagerInterface;
 use Gewebe\SyliusVATPlugin\Entity\VatNumberAddressInterface;
 use Gewebe\SyliusVATPlugin\Vat\Number\Validator\UkVatNumberValidator;
+use Gewebe\SyliusVATPlugin\Vat\Number\VatNumberNormalizer;
 use Sylius\Component\Addressing\Model\ZoneInterface;
 use Sylius\Component\Addressing\Repository\ZoneRepositoryInterface;
 use Sylius\Component\Core\Model\AdjustmentInterface;
@@ -110,7 +111,7 @@ final class VatNumberOrderProcessor implements OrderProcessorInterface
             return false;
         }
 
-        $vatNumber = strtoupper((string) preg_replace('/[\s.\-]/', '', $vatNumber));
+        $vatNumber = VatNumberNormalizer::normalize($vatNumber);
 
         return str_starts_with($vatNumber, UkVatNumberValidator::NORTHERN_IRELAND_PREFIX);
     }

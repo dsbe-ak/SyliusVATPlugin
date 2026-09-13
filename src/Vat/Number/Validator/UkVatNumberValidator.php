@@ -6,6 +6,7 @@ namespace Gewebe\SyliusVATPlugin\Vat\Number\Validator;
 
 use Gewebe\SyliusVATPlugin\Vat\Number\ClientException;
 use Gewebe\SyliusVATPlugin\Vat\Number\Hmrc\HmrcClientInterface;
+use Gewebe\SyliusVATPlugin\Vat\Number\VatNumberNormalizer;
 use Gewebe\SyliusVATPlugin\Vat\Number\VatNumberValidatorInterface;
 use Ibericode\Vat\Validator;
 use Ibericode\Vat\Vies\ViesException;
@@ -41,7 +42,7 @@ final class UkVatNumberValidator implements VatNumberValidatorInterface
 
     public function validateCountry(string $vatNumber, string $countryCode): bool
     {
-        $vatNumber = $this->normalize($vatNumber);
+        $vatNumber = VatNumberNormalizer::normalize($vatNumber);
 
         if (str_starts_with($vatNumber, self::NORTHERN_IRELAND_PREFIX)) {
             return strtoupper($countryCode) === self::COUNTRY_CODE;
@@ -57,7 +58,7 @@ final class UkVatNumberValidator implements VatNumberValidatorInterface
 
     public function validateFormat(string $vatNumber): bool
     {
-        $vatNumber = $this->normalize($vatNumber);
+        $vatNumber = VatNumberNormalizer::normalize($vatNumber);
 
         if (str_starts_with($vatNumber, self::NORTHERN_IRELAND_PREFIX)) {
             return $this->viesValidator->validateVatNumberFormat($vatNumber);
@@ -68,7 +69,7 @@ final class UkVatNumberValidator implements VatNumberValidatorInterface
 
     public function validate(string $vatNumber): bool
     {
-        $vatNumber = $this->normalize($vatNumber);
+        $vatNumber = VatNumberNormalizer::normalize($vatNumber);
 
         if (str_starts_with($vatNumber, self::NORTHERN_IRELAND_PREFIX)) {
             try {
@@ -91,11 +92,6 @@ final class UkVatNumberValidator implements VatNumberValidatorInterface
         }
 
         return $this->client->checkVatNumber($vatRegistrationNumber);
-    }
-
-    private function normalize(string $vatNumber): string
-    {
-        return strtoupper((string) preg_replace('/[\s.\-]/', '', $vatNumber));
     }
 
     private function stripCountryPrefix(string $vatNumber): string

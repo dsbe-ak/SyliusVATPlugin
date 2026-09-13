@@ -6,6 +6,7 @@ namespace Gewebe\SyliusVATPlugin\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gewebe\SyliusVATPlugin\Vat\Number\VatNumberNormalizer;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
@@ -26,6 +27,10 @@ trait ShopBillingDataVatNumberAwareTrait
 
     public function setVatNumber(?string $vatNumber): void
     {
+        if ($vatNumber !== null) {
+            $vatNumber = VatNumberNormalizer::normalize($vatNumber);
+        }
+
         $this->vatNumber = $vatNumber;
     }
 
