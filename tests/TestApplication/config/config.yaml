@@ -3,6 +3,8 @@ imports:
     - { resource: "services_test.php" }
 
 gewebe_sylius_vat:
+    customer_account:
+        show_validation_status: true
     required:
         company: true
         countries:

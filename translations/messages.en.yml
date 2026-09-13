@@ -4,4 +4,5 @@ gewebe_sylius_vat_plugin:
         vat_number: 'VAT number'
         vat_number_is_valid: 'VAT number is valid'
         vat_number_is_invalid: 'VAT number is invalid'
+        vat_number_validation_expired: 'VAT number validation has expired'
         vat_number_not_validated_yet: 'VAT number not validated yet'

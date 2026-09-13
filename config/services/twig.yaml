@@ -1,0 +1,14 @@
+services:
+
+    gewebe_sylius_vat_plugin.customer_account.vat_number_validation_status_resolver:
+        class: Gewebe\SyliusVATPlugin\CustomerAccount\VatNumberValidationStatusResolver
+        arguments:
+            - !abstract 'customer_account.show_validation_status'
+            - !abstract 'revalidate.expiration_days'
+
+    gewebe_sylius_vat_plugin.twig.vat_number_validation_status_extension:
+        class: Gewebe\SyliusVATPlugin\Twig\VatNumberValidationStatusExtension
+        arguments:
+            - '@gewebe_sylius_vat_plugin.customer_account.vat_number_validation_status_resolver'
+        tags:
+            - { name: 'twig.extension' }

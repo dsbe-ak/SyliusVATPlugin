@@ -41,6 +41,12 @@ final class AddressBookVatContext implements Context
         Assert::true($this->createPage->hasVatNumberValidationMessage());
     }
 
+    #[Then('I should see that the VAT number is valid')]
+    public function iShouldSeeThatTheVatNumberIsValid(): void
+    {
+        Assert::true($this->createPage->hasVatNumberValidationStatus('valid'));
+    }
+
     #[Then('I see in the database that vat number for :fullName is valid')]
     public function iSeeInTheDatabaseThatVatNumberForIsValid(string $fullName): void
     {

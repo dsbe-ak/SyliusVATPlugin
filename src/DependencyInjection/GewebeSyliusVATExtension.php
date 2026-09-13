@@ -47,6 +47,10 @@ final class GewebeSyliusVATExtension extends AbstractResourceExtension implement
         $definition->replaceArgument(7, $config['revalidate']['on_login']);
         $definition->replaceArgument(8, $config['revalidate']['expiration_days']);
 
+        $definition = $container->getDefinition('gewebe_sylius_vat_plugin.customer_account.vat_number_validation_status_resolver');
+        $definition->replaceArgument(0, $config['customer_account']['show_validation_status']);
+        $definition->replaceArgument(1, $config['revalidate']['expiration_days']);
+
         $definition = $container->getDefinition('gewebe_sylius_vat_plugin.hmrc_client');
         $definition->replaceArgument(1, $config['hmrc']['base_url']);
         $definition->replaceArgument(2, $config['hmrc']['client_id']);

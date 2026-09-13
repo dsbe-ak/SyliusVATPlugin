@@ -84,6 +84,14 @@ final class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end() // revalidate
+                ->arrayNode('customer_account')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('show_validation_status')->defaultValue(false)
+                            ->info('Show the VAT number validation status for addresses in the customer account.')
+                        ->end()
+                    ->end()
+                ->end() // customer_account
         ;
 
         return $treeBuilder;

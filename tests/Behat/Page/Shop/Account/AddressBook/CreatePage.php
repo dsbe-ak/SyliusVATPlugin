@@ -23,6 +23,14 @@ class CreatePage extends BaseCreatePage implements CreatePageInterface
         return null !== $this->getDocument()->find('css', '.sylius-validation-error:contains("vatNumber")');
     }
 
+    public function hasVatNumberValidationStatus(string $status): bool
+    {
+        return null !== $this->getDocument()->find(
+            'css',
+            sprintf('[data-test-vat-validation-status="%s"]', $status),
+        );
+    }
+
     protected function getDefinedElements(): array
     {
         return array_merge(parent::getDefinedElements(), [

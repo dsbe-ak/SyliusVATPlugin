@@ -11,4 +11,6 @@ interface CreatePageInterface extends \Sylius\Behat\Page\Shop\Account\AddressBoo
     public function specifyVatNumber(string $vatNumber): void;
 
     public function hasVatNumberValidationMessage(): bool;
+
+    public function hasVatNumberValidationStatus(string $status): bool;
 }

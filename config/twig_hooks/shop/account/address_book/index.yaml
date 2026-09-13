@@ -1,0 +1,14 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_shop.account.address_book.index.content.main.addresses.default':
+            content:
+                template: '@GewebeSyliusVATPlugin/shop/account/address_book/content.html.twig'
+
+        'sylius_shop.account.address_book.index.content.main.addresses.list.address':
+            content:
+                template: '@GewebeSyliusVATPlugin/shop/account/address_book/content.html.twig'
+
+        'gewebe_sylius_vat_plugin.shop.account.address_book.address':
+            vat_number:
+                template: '@GewebeSyliusVATPlugin/shop/account/address_book/validation_status.html.twig'
+                priority: 0

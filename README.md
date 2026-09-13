@@ -20,6 +20,7 @@
     * Greek (`EL`) and Northern Ireland (`XI`) VAT number prefixes
     * Valid UK (GB) registration via [HMRC API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/vat-registered-companies-api)
  * Revalidate customers VAT numbers after a given time
+ * Optionally show the VAT number validation status in the customer address book
  * Placing an order without VAT in the EU, if
     * VAT number validation was successful
     * Customers taxation country is different from shop billing country
@@ -181,6 +182,21 @@ bin/console vat:install:eu DE -c standard,reduced
 
 ##### 2. Show VAT number and validation status at admin orders
 ![Screenshot order shipping address with vat number](docs/images/admin_order_address.png)
+
+### Show the validation status in the customer account
+
+The address book can display whether a VAT number is valid, invalid, not yet validated, or whether
+its validation has expired according to `revalidate.expiration_days`.
+
+The display is disabled by default and can be enabled with:
+
+```yaml
+# config/packages/_sylius.yaml
+
+gewebe_sylius_vat:
+    customer_account:
+        show_validation_status: true
+```
 
 ### VAT number normalization
 
