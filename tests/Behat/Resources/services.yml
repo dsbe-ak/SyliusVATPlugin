@@ -60,6 +60,7 @@ services:
         class: Tests\Gewebe\SyliusVATPlugin\Behat\Context\Ui\Shop\Checkout\AddressVatNumberContext
         arguments:
             - "@gewebe_sylius_vat_plugin.behat.page.shop.checkout.address"
+            - "@gewebe_sylius_vat_plugin.behat.page.shop.checkout.complete"
 
     gewebe_sylius_vat_plugin.behat.context.api.shop.address_book_vat:
         class: Tests\Gewebe\SyliusVATPlugin\Behat\Context\Api\Shop\AddressBookVatContext
@@ -98,4 +99,9 @@ services:
     gewebe_sylius_vat_plugin.behat.page.shop.checkout.address:
         class: Tests\Gewebe\SyliusVATPlugin\Behat\Page\Shop\Checkout\AddressPage
         parent: sylius.behat.page.shop.checkout.address
+        public: false
+
+    gewebe_sylius_vat_plugin.behat.page.shop.checkout.complete:
+        class: Tests\Gewebe\SyliusVATPlugin\Behat\Page\Shop\Checkout\CompletePage
+        parent: sylius.behat.page.shop.checkout.complete
         public: false

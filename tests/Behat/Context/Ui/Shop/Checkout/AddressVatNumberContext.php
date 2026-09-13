@@ -8,12 +8,15 @@ use Behat\Behat\Context\Context;
 use Behat\Step\Then;
 use Behat\Step\When;
 use Tests\Gewebe\SyliusVATPlugin\Behat\Page\Shop\Checkout\AddressPage;
+use Tests\Gewebe\SyliusVATPlugin\Behat\Page\Shop\Checkout\CompletePageInterface;
 use Webmozart\Assert\Assert;
 
 final class AddressVatNumberContext implements Context
 {
-    public function __construct(private readonly AddressPage $addressPage)
-    {
+    public function __construct(
+        private readonly AddressPage $addressPage,
+        private readonly CompletePageInterface $completePage,
+    ) {
     }
 
     #[When('/^I specify the billing company as "([^"]+)"$/')]
@@ -49,6 +52,12 @@ final class AddressVatNumberContext implements Context
         ;
 
         Assert::same($actualVatNumber, $vatNumber);
+    }
+
+    #[Then('/^I should see that the (shipping|billing) VAT number is valid on the checkout summary$/')]
+    public function iShouldSeeThatTheVatNumberIsValidOnTheCheckoutSummary(string $type): void
+    {
+        Assert::true($this->completePage->hasVatNumberValidationStatus($type, 'valid'));
     }
 
     #[Then('/^I should be notified that the VAT number in (shipping|billing) is required$/')]

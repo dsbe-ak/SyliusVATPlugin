@@ -1,0 +1,45 @@
+{% set address = hookable_metadata.context.address %}
+
+{% if address.vatNumber is not null %}
+    {% set status = gewebe_sylius_vat_validation_status(address, vat_validation_check_expiration|default(true)) %}
+    {% set status_configuration = {
+        valid: {
+            class: 'text-success',
+            icon: 'tabler:circle-check',
+            label: 'gewebe_sylius_vat_plugin.ui.vat_number_is_valid',
+        },
+        invalid: {
+            class: 'text-danger',
+            icon: 'tabler:circle-x',
+            label: 'gewebe_sylius_vat_plugin.ui.vat_number_is_invalid',
+        },
+        expired: {
+            class: 'text-warning',
+            icon: 'tabler:clock-exclamation',
+            label: 'gewebe_sylius_vat_plugin.ui.vat_number_validation_expired',
+        },
+    } %}
+
+    <div class="address-vat text-muted">
+        {{ 'gewebe_sylius_vat_plugin.ui.vat'|trans }}:
+        <span class="vat-number">{{ address.vatNumber }}</span>
+
+        {% if status is not null and status_configuration[status] is defined %}
+            {% set configuration = status_configuration[status] %}
+            {% set label = configuration.label|trans %}
+            {% set tooltip = label %}
+            {% if address.vatValidatedAt is not null %}
+                {% set tooltip = tooltip ~ ' · ' ~ (address.vatValidatedAt|format_date) %}
+            {% endif %}
+
+            <span
+                class="address-vat-validation-status {{ configuration.class }}"
+                title="{{ tooltip }}"
+                aria-label="{{ tooltip }}"
+                {{ sylius_test_html_attribute('vat-validation-status', status) }}
+            >
+                {{ ux_icon(configuration.icon, { class: 'icon icon-xs' }) }}
+            </span>
+        {% endif %}
+    </div>
+{% endif %}

@@ -88,7 +88,7 @@ final class Configuration implements ConfigurationInterface
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->booleanNode('show_validation_status')->defaultValue(false)
-                            ->info('Show the VAT number validation status for addresses in the customer account.')
+                            ->info('Show the VAT number validation status in the customer account and checkout summary.')
                         ->end()
                     ->end()
                 ->end() // customer_account

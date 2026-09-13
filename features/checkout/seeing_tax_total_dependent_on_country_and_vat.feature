@@ -97,6 +97,8 @@ Feature: Seeing tax total dependent on country and vat
         And I try to complete the addressing step
         And I proceed with "Post-HR" shipping method and "Offline" payment
         Then I should be on the checkout summary step
+        And I should see that the billing VAT number is valid on the checkout summary
+        And I should see that the shipping VAT number is valid on the checkout summary
         And my tax total should be "$0.00"
         And my order shipping should be "$4.00"
         And my order total should be "$24.00"
