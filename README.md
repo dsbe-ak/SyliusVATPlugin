@@ -20,7 +20,7 @@
     * Greek (`EL`) and Northern Ireland (`XI`) VAT number prefixes
     * Valid UK (GB) registration via [HMRC API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/vat-registered-companies-api)
  * Revalidate customers VAT numbers after a given time
- * Optionally show the VAT number validation status in the customer address book and checkout summary
+ * Optionally show the VAT number validation status in the customer address book, checkout summary and order history
  * Placing an order without VAT in the EU, if
     * VAT number validation was successful
     * Customers taxation country is different from shop billing country
@@ -185,10 +185,10 @@ bin/console vat:install:eu DE -c standard,reduced
 
 ### Show the validation status in the customer account and checkout
 
-The address book and the address cards on the final checkout summary can display whether a VAT
-number is valid, invalid, not yet validated, or whether its validation has expired according to
-`revalidate.expiration_days`. In the checkout summary, unvalidated addresses do not
-display a status. Hovering over a status icon shows the validation date.
+The address book and the address cards in the checkout summary and customer order history can display whether a VAT
+number is valid, invalid, or not yet validated. The address book and checkout summary also show whether a validation
+has expired according to `revalidate.expiration_days`, while the order history preserves the status at the time the
+order was placed.
 
 The display is disabled by default and can be enabled with:
 

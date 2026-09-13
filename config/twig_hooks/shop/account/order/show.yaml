@@ -1,0 +1,9 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_shop.account.order.show.content.main.summary.addresses.billing.body.address':
+            vat_number:
+                template: '@GewebeSyliusVATPlugin/shop/account/order/show/vat_number.html.twig'
+
+        'sylius_shop.account.order.show.content.main.summary.addresses.shipping.body.address':
+            vat_number:
+                template: '@GewebeSyliusVATPlugin/shop/account/order/show/vat_number.html.twig'

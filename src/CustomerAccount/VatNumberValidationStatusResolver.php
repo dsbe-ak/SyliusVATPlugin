@@ -24,7 +24,7 @@ final readonly class VatNumberValidationStatusResolver
     ) {
     }
 
-    public function resolve(AddressInterface $address): ?string
+    public function resolve(AddressInterface $address, bool $checkExpiration = true): ?string
     {
         if (!$this->enabled ||
             !$address instanceof VatNumberAddressInterface ||
@@ -40,6 +40,10 @@ final readonly class VatNumberValidationStatusResolver
 
         if (!$address->isVatValid()) {
             return self::INVALID;
+        }
+
+        if (!$checkExpiration) {
+            return self::VALID;
         }
 
         $expiresAt = DateTimeImmutable::createFromInterface($validatedAt)

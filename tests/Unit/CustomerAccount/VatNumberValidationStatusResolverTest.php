@@ -73,6 +73,19 @@ final class VatNumberValidationStatusResolverTest extends TestCase
         );
     }
 
+    public function testItDoesNotExpireAHistoricalValidationWhenExpirationIsDisabled(): void
+    {
+        $resolver = new VatNumberValidationStatusResolver(enabled: true, expirationDays: 30);
+
+        self::assertSame(
+            VatNumberValidationStatusResolver::VALID,
+            $resolver->resolve(
+                $this->getAddress(validatedAt: new DateTime('2020-01-01'), valid: true),
+                checkExpiration: false,
+            ),
+        );
+    }
+
     private function getAddress(
         bool $hasVatNumber = true,
         ?DateTime $validatedAt = null,
