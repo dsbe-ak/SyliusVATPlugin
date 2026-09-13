@@ -1,5 +1,12 @@
 services:
 
+    gewebe_sylius_vat_plugin.order_checkout.copy_vat_number_validation_between_addresses_listener:
+        class: Gewebe\SyliusVATPlugin\EventListener\Workflow\OrderCheckout\CopyVatNumberValidationBetweenOrderAddressesListener
+        arguments:
+            - '@sylius.comparator.address'
+        tags:
+            - { name: kernel.event_listener, event: workflow.sylius_order_checkout.completed.address, priority: 300 }
+
     # Order processor
     gewebe_sylius_vat_plugin.order_processor:
         class: Gewebe\SyliusVATPlugin\OrderProcessing\VatNumberOrderProcessor
